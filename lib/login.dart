@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_auth/dashboard.dart';
 import 'register.dart';
 import 'resetpassword.dart';
 import 'StartPage.dart';
@@ -12,6 +11,7 @@ import 'package:flutter_auth/models/usermodel.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'constants/argon_theme.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -85,8 +85,7 @@ class _LoginPageState extends State<LoginPage> {
 
   loginUser() {
     if (checkFields()) {
-      // Fluttertoast.showToast(msg: "${_email}");
-      // Fluttertoast.showToast(msg: "${_password}");
+       Fluttertoast.showToast(msg: "${_email}");
       Fluttertoast.showToast(msg: "Authenticating..");
       FirebaseAuth.instance
           .signInWithEmailAndPassword(email: _email, password: _password)
@@ -115,6 +114,67 @@ class _LoginPageState extends State<LoginPage> {
       });
     }
   }
+
+
+    Future<void> _googleSignIn() async {
+       Fluttertoast.showToast(msg: "Google");
+      final googleSignIn = GoogleSignIn();
+      final googleAccount = await googleSignIn.signIn();
+      if (googleAccount != null) {
+        final googleAuth = await googleAccount.authentication;
+        if (googleAuth.accessToken != null && googleAuth.idToken != null) {
+          try {
+            final authResult = await   FirebaseAuth.instance.signInWithCredential(
+              GoogleAuthProvider.credential(
+                  idToken: googleAuth.idToken,
+                  accessToken: googleAuth.accessToken),
+            );
+            // var date = DateTime.now().toString();
+            var date = authResult.user!.metadata.creationTime.toString();
+            var dateParse = DateTime.parse(date);
+            var formattedDate =
+                '${dateParse.day}-${dateParse.month}-${dateParse.year}';
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(authResult.user!.uid)
+                .set({
+              'uid': authResult.user!.uid,
+              'name': authResult.user!.displayName,
+              'email': authResult.user!.email,
+              'phone': authResult.user!.phoneNumber,
+              'imageUrl': authResult.user!.photoURL,
+              'joinedAt': formattedDate,
+              'createdAt': date,
+              'balance': 0,
+              'deposit': 0,
+              'received': 0,
+              'sent': 0,
+              'transfer': 0,
+              'withdrawals': 0,
+            });
+            print(authResult.user!.phoneNumber);
+          }
+          catch (error) {
+            print('error occurred ${error.toString()}');
+          }
+        }
+      }
+    }
+
+  _githubSignIn(){
+
+  }
+
+  static SnackBar customSnackBar({required String content}) {
+    return SnackBar(
+      backgroundColor: Colors.black,
+      content: Text(
+        content,
+        style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +230,9 @@ class _LoginPageState extends State<LoginPage> {
                                           child: RaisedButton(
                                               textColor: ArgonColors.primary,
                                               color: ArgonColors.secondary,
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                _googleSignIn();
+                                              },
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                   BorderRadius.circular(4)),
@@ -185,12 +247,12 @@ class _LoginPageState extends State<LoginPage> {
                                                     MainAxisAlignment
                                                         .spaceAround,
                                                     children: [
-                                                      Icon(FontAwesomeIcons.github,
+                                                      Icon(FontAwesomeIcons.google,
                                                           size: 13),
                                                       SizedBox(
                                                         width: 5,
                                                       ),
-                                                      Text("GITHUB",
+                                                      Text("GOOGLE",
                                                           style: TextStyle(
                                                               fontWeight:
                                                               FontWeight.w600,
@@ -204,7 +266,9 @@ class _LoginPageState extends State<LoginPage> {
                                           child: RaisedButton(
                                               textColor: ArgonColors.primary,
                                               color: ArgonColors.secondary,
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                _githubSignIn();
+                                              },
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                   BorderRadius.circular(4)),
@@ -220,12 +284,12 @@ class _LoginPageState extends State<LoginPage> {
                                                         .spaceAround,
                                                     children: [
                                                       Icon(
-                                                          FontAwesomeIcons.facebook,
+                                                          FontAwesomeIcons.github,
                                                           size: 13),
                                                       SizedBox(
                                                         width: 5,
                                                       ),
-                                                      Text("FACEBOOK",
+                                                      Text("GITHUB",
                                                           style: TextStyle(
                                                               fontWeight:
                                                               FontWeight.w600,

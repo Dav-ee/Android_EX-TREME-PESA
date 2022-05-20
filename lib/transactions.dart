@@ -25,18 +25,11 @@ class _WalletPageState extends State<WalletPage> {
 
   bool showAllTransactions = false;
   bool isLoading = true;
-  //for sent
-  late Map<String, dynamic> userMap = {};
-  List collectionElements = [];
-
-  //for received
-  late Map<String, dynamic> userMapR = {};
-  List collectionElementsR = [];
-
 
   @override
   void initState() {
     super.initState();
+
     User? user = FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance
         .collection("users")
@@ -51,46 +44,49 @@ class _WalletPageState extends State<WalletPage> {
         });
       }
     });
-
-
-
-
-    //get transactions for received
-    // FirebaseFirestore.instance.collection("transfers").where("receiver_phone",
-    //     isEqualTo: loggedInUser.phone ).orderBy("date",descending: true).get().then((value2) {
-    //   for (int r = 0; r < value2.docs.length; r++) {
-    //     userMapR = value2.docs[r].data();
-    //     collectionElementsR.add(userMapR);
-    //   }
-    // });
   }
-
-
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      FirebaseFirestore.instance.collection("transfers").where("sender_name",
-          isEqualTo : loggedInUser.name ).get().then((value) {
-        for (int i = 0; i < value.docs.length; i++) {
-          userMap = value.docs[i].data();
-           collectionElements.add(userMap);
-           print(collectionElements[i]);
-        }
-
-      });
-    });
 
 
-    // print(loggedInUser.phone);
+    // FirebaseFirestore.instance.collection('transfers').doc(
+    //     loggedInUser.uid).collection('sent').where(
+    //     "initiator", isEqualTo: loggedInUser.phone).get().then((value) {
+    //   for (int r = 0; r < value.docs.length; r++) {
+    //     userMap = value.docs[r].data();
+    //     print(userMap.length);
+    //     collectionElements.add(userMap);
+    //
+    //
+    //   }
+    // });
+
+//saved
+    // StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+    //   stream: FirebaseFirestore.instance.collection('users').snapshots(),
+    //   builder: (_, snapshot) {
+    //     if (snapshot.hasError) return Text('Error = ${snapshot.error}');
+    //
+    //     if (snapshot.hasData) {
+    //       final docs = snapshot.data!.docs;
+    //       return ListView.builder(
+    //         itemCount: docs.length,
+    //         itemBuilder: (_, i) {
+    //           final data = docs[i].data();
+    //           return ListTile(
+    //             title: Text(data['name']),
+    //             subtitle: Text(data['phone']),
+    //           );
+    //         },
+    //       );
+    //     }
+    //
+    //     return Center(child: CircularProgressIndicator());
+    //   },
+    // ),
 
     final deviceHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
         body: SafeArea(
         child:  (isLoading)
@@ -109,119 +105,163 @@ class _WalletPageState extends State<WalletPage> {
         children: [
     RoundContainer(
     totalExpense: int.parse(loggedInUser.sent.toString()), totalIncome: int.parse(loggedInUser.received.toString())),
-          // Row(
-          //   crossAxisAlignment: CrossAxisAlignment.center,
-          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-          //   children: [
-          //     GestureDetector(
-          //       onTap: () {
-          //         setState(() {
-          //           showAllTransactions = false;
-          //         });
-          //       },
-          //       child: Text(
-          //         "SENT",
-          //         style:showAllTransactions
-          //             ? kInactiveTextStyle
-          //             : kActiveTextStyle,
-          //       ),
-          //     ),
-          //     GestureDetector(
-          //       onTap: () {
-          //         setState(() {
-          //           showAllTransactions = true;
-          //         });
-          //       },
-          //       child: Text(
-          //         "RECEIVED",
-          //         style: showAllTransactions
-          //             ? kActiveTextStyle
-          //             : kInactiveTextStyle,
-          //       ),
-          //     ),
-          //   ],
-          // ),
 
-            Container(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewPadding.bottom + 100),
-            height: deviceHeight * 0.55,
-            child: ListView.builder(
-              // shrinkWrap: true,
-              itemCount: 2,
-              itemBuilder: (BuildContext context, i) {
-                return Card(
-                  elevation: 1.0,
-                  margin: const EdgeInsets.only(
-                    top: 10.0,
-                    bottom: 5,
-                    left: 20.0,
-                    right: 20.0,
-                  ),
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor:
-                        Colors.green,
-                        radius: 20.0,
-                        child: Icon(
-                           Icons.add_shopping_cart,
-                            color: Colors.white),
-                      ),
-                      title: Text(
-                        userMap['type'].toString() + " to " + userMap['receiver_name'].toString(),
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      subtitle: Text(
-                        " Receiver's Number " + userMap['receiver_phone'].toString(),
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 11.0,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      trailing: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "KES " + userMap["amount"].toString(),
-                            style: TextStyle(
-                              color:Colors.green,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16.0,
-                            ),
-                          ),
-                          Text(
-                            userMap['date'].toString(),
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 15.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    showAllTransactions = false;
+                  });
+                },
+                child: Text(
+                  "SENT",
+                  style: showAllTransactions
+                      ? kInactiveTextStyle
+                      : kActiveTextStyle,
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    showAllTransactions = true;
+                  });
+                },
+                child: Text(
+                  "RECEIVED",
+                  style: showAllTransactions
+                      ? kActiveTextStyle
+                      : kInactiveTextStyle,
+                ),
+              ),
+            ],
           ),
 
+          // Categories transactions
+          if (!showAllTransactions)
+          // ignore: sized_box_for_whitespace
+                Container(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewPadding.bottom + 100),
+                  height: deviceHeight * 0.55,
+                  child:  StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                    stream: FirebaseFirestore.instance.collection('transfers').doc(
+                         loggedInUser.uid).collection('sent').where(
+                        "sender_phone", isEqualTo: loggedInUser.phone).snapshots(),
+                    builder: (_, snapshot) {
+                      if (snapshot.hasError) return Text('Error = ${snapshot.error}');
 
+                      if (snapshot.hasData) {
+                        final docs = snapshot.data!.docs;
+                        return  docs.length == 0
+                            ? Text("No Records Found",   style: TextStyle(
+                          color:Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16.0,
+
+                        ),)
+                            : ListView.builder(
+                          itemCount: docs.length,
+                          itemBuilder: (_, i) {
+                            final data = docs[i].data();
+                            return  Card(
+                              elevation: 1.0,
+                              margin: const EdgeInsets.only(
+                                top: 10.0,
+                                bottom: 5,
+                                left: 20.0,
+                                right: 20.0,
+                              ),
+                              color: Colors.white,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundColor:
+                                    Colors.green,
+                                    radius: 20.0,
+                                    child: Icon(
+                                        Icons.send,
+                                        color: Colors.white),
+                                  ),
+                                  title: Text(
+                                    "TRANSFERED FUNDS TO " + data['receiver_name'].toString(),
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    " Receiver's Number " +  data['receiver_phone'].toString() ,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 11.0,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  trailing: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "KES " +  data['amount'].toString(),
+                                        style: TextStyle(
+                                          color:Colors.green,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16.0,
+                                        ),
+                                      ),
+                                      Text(
+                                        data['date'].toString(),
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 15.0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
+else
+                      return Center(child: CircularProgressIndicator(
+                        color: Colors.blueAccent,
+                        strokeWidth: 2,
+                      ));
+                    },
+                  ),
+                ),
+
+          // all the transactions
+          if (showAllTransactions)
             Container(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewPadding.bottom + 100),
               height: deviceHeight * 0.55,
-              child: ListView.builder(
-                // shrinkWrap: true,
-                itemCount: collectionElementsR.length,
-                itemBuilder: (BuildContext context, r) {
+              child:   StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+    stream: FirebaseFirestore.instance.collection('transfers').doc(
+    loggedInUser.uid).collection('received').where(
+    "receiver_phone", isEqualTo: loggedInUser.phone).snapshots(),
+    builder: (_, snapshot_r) {
+    if (snapshot_r.hasError) return Text('Error = ${snapshot_r.error}');
+    if (snapshot_r.hasData) {
+    final docs = snapshot_r.data!.docs;
+    return docs.length == 0
+        ? Text("No Records Found",   style: TextStyle(
+      color:Colors.black,
+      fontWeight: FontWeight.w600,
+      fontSize: 16.0,
+
+    ),)
+        :   ListView.builder(
+    itemCount: docs.length,
+    itemBuilder: (_, i) {
+    final data_received = docs[i].data();
                   return Card(
                     elevation: 1.0,
                     margin: const EdgeInsets.only(
@@ -239,19 +279,19 @@ class _WalletPageState extends State<WalletPage> {
                           Colors.green,
                           radius: 20.0,
                           child: Icon(
-                              Icons.add_shopping_cart,
+                              Icons.verified_outlined,
                               color: Colors.white),
                         ),
                         title: Text(
-                          "Received Money From " + collectionElementsR[r]["sender_name"],
+                          "RECEIVED FUNDS FROM "+ data_received['sender_name'].toString() ,
                           style: const TextStyle(
                             color: Colors.black,
-                            fontSize: 18.0,
+                            fontSize: 17.0,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
                         subtitle: Text(
-                          " Sender's Number " + collectionElements[r]["from"],
+                          " Sender's Number " + data_received['sender_phone'].toString(),
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 11.0,
@@ -262,7 +302,7 @@ class _WalletPageState extends State<WalletPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "KES " + collectionElements[r]["amount"].toString(),
+                              "KES " + data_received['amount'].toString() ,
                               style: TextStyle(
                                 color:Colors.green,
                                 fontWeight: FontWeight.w600,
@@ -270,7 +310,7 @@ class _WalletPageState extends State<WalletPage> {
                               ),
                             ),
                             Text(
-                              collectionElements[r]["date"],
+                              data_received['date'].toString(),
                               style: const TextStyle(
                                 color: Colors.grey,
                                 fontSize: 15.0,
@@ -281,13 +321,26 @@ class _WalletPageState extends State<WalletPage> {
                       ),
                     ),
                   );
-                },
+    },
+    );
+    }
+else
+    return Center(child: CircularProgressIndicator(
+      color: Colors.blueAccent,
+      strokeWidth: 2,
+    ));
+    },
               ),
             ),
-  ]
+
+
+
+],
     ),
     ),
     ),
     );
+
+
   }
 }

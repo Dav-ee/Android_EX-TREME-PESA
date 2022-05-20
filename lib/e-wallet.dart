@@ -77,8 +77,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
 
   Future<dynamic> startTransaction() async {
     if (checkFields()) {
-
-      Fluttertoast.showToast(msg: "${loggedInUser.phone}");
+      Fluttertoast.showToast(msg: "STK PUSH INITIATED");
       Fluttertoast.showToast(msg: "${_amount}");
 
       dynamic transactionInitialization;

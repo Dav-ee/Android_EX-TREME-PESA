@@ -60,6 +60,7 @@ dev_dependencies:
   universal_io: ^2.0.4
   url_launcher: ^6.0.20
   intl: ^0.17.0
+  google_sign_in: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -40,9 +40,7 @@ class _DashboardState extends State<Dashboard> {
     late int Expenses =  int.parse(loggedInUser.received.toString()) + int.parse(loggedInUser.sent.toString());
     return Expenses;
   }
-  // Future<void> _signOut() async {
-  // await FirebaseAuth.instance.signOut();
-  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -68,12 +66,13 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Text(
                     'WELCOME ${loggedInUser.name}!',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
+
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 16.0),
                   decoration: BoxDecoration(

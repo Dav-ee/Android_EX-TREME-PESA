@@ -105,14 +105,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   backgroundColor: Colors.red,
                 ),
 
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    '${loggedInUser.name}',
-                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22),
-                  ),
-                ),
-
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: Text(
+                //     '${loggedInUser.name}',
+                //     style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22),
+                //   ),
+                // ),
+                SizedBox(height: 10.0),
                 Container(
                   padding: EdgeInsets.all(16.0),
                   height: 340,

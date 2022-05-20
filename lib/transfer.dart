@@ -82,8 +82,6 @@ class _TransferPageState extends State<TransferPage> {
 
 
   MakeTransfer() async {
-    late Map<String, dynamic> userMap;
-
     if (checkFields()) {
       int? getBAL = loggedInUser.balance;
       if (getBAL! < _amount) {
@@ -127,15 +125,22 @@ if(userMap.isNotEmpty){
 //  deduct senders balance
  late int newSBal = (loggedInUser.balance! - _amount);
  late int newSsent = (loggedInUser.sent! + _amount);
-
+    // add senders user balances
    FirebaseFirestore.instance.collection("users").doc(loggedInUser.uid).update(
     {
       'balance': newSBal ,
       'sent': newSsent ,
     }
   );
+    // add receivers user balances
+    FirebaseFirestore.instance.collection("users").doc(getRuid).update(
+        {
+          'balance': getRbalance + _amount ,
+          'received': getRrecieved  + _amount,
+        }
+    );
 
-//insert data into transfers collections
+//insert data into transfers >> sent collections
    FirebaseFirestore.instance.collection("transfers").add(
     {
       'from': loggedInUser.phone ,
@@ -148,13 +153,32 @@ if(userMap.isNotEmpty){
     }
   );
 
-// add receivers user balances
-   FirebaseFirestore.instance.collection("users").doc(getRuid).update(
-      {
-        'balance': getRbalance + _amount ,
-        'received': getRrecieved  + _amount,
-      }
-  );
+    //insert data into transfers >> received collections
+    FirebaseFirestore.instance.collection("transfers").doc(loggedInUser.uid).collection('received').add(
+        {
+          'sende_phone': loggedInUser.phone ,
+          'sender_name': loggedInUser.name,
+          'receiver_phone': getRphone,
+          'receiver_name': getRname,
+          'amount': _amount,
+          'date': formattedDate ,
+          'type': 'RECEIVED',
+        }
+    );
+
+    //insert data into transfers >> SENT collections
+    FirebaseFirestore.instance.collection("transfers").doc(loggedInUser.uid).collection('sent').add(
+        {
+          'sender_phone': loggedInUser.phone ,
+          'sender_name': loggedInUser.name,
+          'receiver_phone': getRphone,
+          'receiver_name': getRname,
+          'amount': _amount,
+          'date': formattedDate ,
+          'type': 'SEND',
+        }
+    );
+
 
 
   Fluttertoast.showToast(
@@ -172,15 +196,22 @@ if(userMap.isNotEmpty){
 
 }
 }
-            });
+            }
+            );
 
 
 
       }
     }
   }
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
+
     Widget addThisCard = InkWell(
       onTap: () {
         MakeTransfer();

@@ -18,10 +18,10 @@ const kGradient = LinearGradient(
 const kActiveTextStyle = TextStyle(
   color: Colors.deepOrangeAccent,
   fontSize: 32.0,
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w700,
 );
 const kInactiveTextStyle = TextStyle(
   color: Colors.grey,
-  fontSize: 19.0,
+  fontSize: 16.0,
   fontWeight: FontWeight.w400,
 );
