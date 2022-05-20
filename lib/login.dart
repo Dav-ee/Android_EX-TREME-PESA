@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
           .signInWithEmailAndPassword(email: _email, password: _password)
           .then((uid) {
         Fluttertoast.showToast(
-            msg: "Login  successfull ${_email}",
+            msg: "Login  successful ${_email}",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER_LEFT,
             timeInSecForIosWeb: 4,
@@ -152,7 +152,20 @@ class _LoginPageState extends State<LoginPage> {
               'transfer': 0,
               'withdrawals': 0,
             });
-            print(authResult.user!.phoneNumber);
+
+            Fluttertoast.showToast(
+                msg: "Login  successful ${authResult.user!.email}",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER_LEFT,
+                timeInSecForIosWeb: 4,
+                backgroundColor: Colors.red,
+                textColor: Colors.white,
+                fontSize: 16.0);
+
+            Navigator.pop(context);
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => StartPage()));
+
           }
           catch (error) {
             print('error occurred ${error.toString()}');

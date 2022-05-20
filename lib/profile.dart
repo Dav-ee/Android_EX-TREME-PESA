@@ -55,11 +55,13 @@ class _ProfilePageState extends State<ProfilePage> {
             ? Center(
           child:
           SizedBox(
-            height: 30,
-            width: 30,
+            height: 40,
+            width: 40,
             child: CircularProgressIndicator(
               color: Colors.blueAccent,
-              strokeWidth: 2,
+              backgroundColor: Colors.blueAccent,
+              valueColor: new AlwaysStoppedAnimation<Color>(Colors.red),
+              strokeWidth: 3,
             ),
           ),
         )
@@ -94,24 +96,17 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 CircleAvatar(
                   radius: 50,
-                  child: Text(
-                    '${loggedInUser.name}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 10
-                    ),
-                  ),
+                  child: Image.network('${loggedInUser.imageUrl}', cacheWidth: 65, cacheHeight: 65,),
                   backgroundColor: Colors.red,
                 ),
 
-                // Padding(
-                //   padding: const EdgeInsets.all(8.0),
-                //   child: Text(
-                //     '${loggedInUser.name}',
-                //     style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22),
-                //   ),
-                // ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    '${loggedInUser.name}',
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22),
+                  ),
+                ),
                 SizedBox(height: 10.0),
                 Container(
                   padding: EdgeInsets.all(16.0),
@@ -170,6 +165,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         ),
                         SizedBox(height: 10.0),
+
                         Row(
                           children: <Widget>[
                             Flexible(
@@ -194,6 +190,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ],
                         ),
+
+
                         SizedBox(height: 10.0),
                         Row(
                           children: <Widget>[

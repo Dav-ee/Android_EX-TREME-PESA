@@ -92,11 +92,13 @@ class _WalletPageState extends State<WalletPage> {
         child:  (isLoading)
             ? Center(
           child: SizedBox(
-            height: 30,
-            width: 30,
+            height: 40,
+            width: 40,
             child: CircularProgressIndicator(
               color: Colors.blueAccent,
-              strokeWidth: 2,
+              backgroundColor: Colors.blueAccent,
+              valueColor: new AlwaysStoppedAnimation<Color>(Colors.red),
+            strokeWidth: 3,
             ),
           ),
         )

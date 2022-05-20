@@ -8,6 +8,7 @@ class UserModel {
   int? withdrawals;
   int? received;
   int? sent;
+  String? imageUrl;
 
   UserModel({
     this.uid,
@@ -18,7 +19,8 @@ class UserModel {
     this.deposit,
     this.withdrawals,
     this.received,
-    this.sent
+    this.sent,
+    this.imageUrl
   });
 
   // receiving data from server
@@ -33,6 +35,7 @@ class UserModel {
       withdrawals: map['withdrawals'],
       received: map['received'],
       sent: map['sent'],
+      imageUrl: map['imageUrl'],
     );
   }
   // sending data to our server
